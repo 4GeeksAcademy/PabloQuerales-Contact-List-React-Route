@@ -4,7 +4,7 @@ import "../../styles/form.css";
 
 export const Form = () => {
     const [hiddenMessage, setHiddenMessage] = useState("hidden")
-    function postContact(name, phone, email, address) {
+    async function postContact(name, phone, email, address) {
 
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -22,21 +22,16 @@ export const Form = () => {
             body: raw,
             redirect: "follow"
         };
-
-        fetch("https://playground.4geeks.com/contact/agendas/PabloQuerales/contacts", requestOptions)
-            .then((response) => {
-                if (response.status == 201) {
-                    setHiddenMessage("")
-                } else {
-                    setHiddenMessage("hidden")
-                }
-                return response.json()
-            })
-            .then((result) => console.log(result))
-            .catch((error) => console.error(error));
-
-
-
+        try {
+            const response = await fetch("https://playground.4geeks.com/contact/agendas/PabloQuerales/contacts", requestOptions);
+            if (response.status == 201) {
+                setHiddenMessage("")
+            } else {
+                setHiddenMessage("hidden")
+            }
+        } catch (error) {
+            console.error(error);
+        };
     }
 
     const handleSubmit = (e) => {
@@ -47,6 +42,10 @@ export const Form = () => {
         e.target.phone.value = ""
         e.target.address.value = ""
     }
+    const [comp,setComp] = useState({
+        name:""
+        
+    })
     return (
         <div className="mt-4">
             <h1 className="text-center">Add New Contact</h1>
